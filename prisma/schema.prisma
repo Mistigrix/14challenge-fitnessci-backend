@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ExerciseCategory {
+  CHEST
+  BACK
+  SHOULDERS
+  ARMS
+  LEGS
+  ABS
+  CARDIO
+  FULL_BODY
+  OTHER
+}
+
+enum ExerciseType {
+  REPS
+  DURATION
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  firstName String?   @map("first_name")
+  lastName  String?   @map("last_name")
+  height    Float?
+  weight    Float?
+  birthDate DateTime? @map("birth_date")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  metrics      UserMetric[]
+  exerciseLogs ExerciseLog[]
+  programs     UserProgram[]
+
+  @@map("users")
+}
+
+model Program {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  difficulty  Difficulty @default(BEGINNER)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  workouts Workout[]
+  users    UserProgram[]
+
+  @@map("programs")
+}
+
+model Workout {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  order       Int      @default(0)
+  programId   String   @map("program_id")
+  program     Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  exercises WorkoutExercise[]
+
+  @@map("workouts")
+}
+
+model Exercise {
+  id          String           @id @default(cuid())
+  name        String
+  category    ExerciseCategory
+  type        ExerciseType
+  description String?
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  workouts     WorkoutExercise[]
+  exerciseLogs ExerciseLog[]
+
+  @@map("exercises")
+}
+
+model WorkoutExercise {
+  id         String   @id @default(cuid())
+  workoutId  String   @map("workout_id")
+  exerciseId String   @map("exercise_id")
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  sets       Int?
+  reps       Int?
+  duration   Int?
+  calories   Float?
+  order      Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([workoutId, exerciseId])
+  @@map("workout_exercises")
+}
+
+model UserMetric {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weight    Float
+  date      DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("user_metrics")
+}
+
+model ExerciseLog {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  exerciseId String   @map("exercise_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  sets       Int?
+  reps       Int?
+  duration   Int?
+  calories   Float?
+  date       DateTime @default(now())
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("exercise_logs")
+}
+
+model UserProgram {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  programId String   @map("program_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  startedAt DateTime @default(now()) @map("started_at")
+
+  @@unique([userId, programId])
+  @@map("user_programs")
+}
