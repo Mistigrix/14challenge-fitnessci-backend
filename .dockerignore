@@ -1,0 +1,40 @@
+# Dépendances
+node_modules
+
+# Build local
+dist
+
+# Client Prisma généré localement (regénéré dans Docker)
+generated
+
+# Git
+.git
+.gitignore
+
+# Environnement local
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Tests
+test
+coverage
+**/*.spec.ts
+**/*.e2e-spec.ts
+
+# IDE & OS
+.vscode
+.idea
+*.DS_Store
+
+# Docker lui-même
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Docs
+README.md
