@@ -5,8 +5,12 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "build": "nest build",
+    "seed": "tsx prisma/seed.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -40,6 +44,7 @@
     "passport-jwt": "^4.0.1",
     "pg": "^8.20.0",
     "prisma": "^7.5.0",
+    "tsx": "^4.21.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

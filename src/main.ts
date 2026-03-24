@@ -34,10 +34,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: { persistAuthorization: true },
+    jsonDocumentUrl: 'api/docs/json',
+    yamlDocumentUrl: 'api/docs/yaml',
   });
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Server running on http://localhost:${process.env.PORT ?? 3000}/api/v1`);
-  console.log(`Swagger docs   → http://localhost:${process.env.PORT ?? 3000}/api/docs`);
+  console.log(`Swagger UI     → http://localhost:${process.env.PORT ?? 3000}/api/docs`);
+  console.log(`Swagger JSON   → http://localhost:${process.env.PORT ?? 3000}/api/docs/json`);
+  console.log(`Swagger YAML   → http://localhost:${process.env.PORT ?? 3000}/api/docs/yaml`);
 }
 bootstrap();
